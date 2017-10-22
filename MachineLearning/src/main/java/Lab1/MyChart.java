@@ -1,14 +1,17 @@
 package Lab1;
 
-import Lab1.Main1;
-import Lab1.Main1.Element;
-import org.knowm.xchart.SwingWrapper;
-import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.XYSeries;
+import javafx.scene.chart.BubbleChart;
+import javafx.scene.chart.ChartBuilder;
+import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
+import org.knowm.xchart.BubbleChart.*;
 
 import java.util.*;
+
+import Lab1.Main1.*;
+import Lab1.Element.*;
+
+import static Lab1.Main1.kNN;
 
 /**
  * http://knowm.org/open-source/xchart/xchart-example-code/, "Scatter"
@@ -21,7 +24,6 @@ public class MyChart {
         new SwingWrapper<XYChart>(chart).displayChart();
     }
 
-
     public XYChart getChart(List<Element> dataList, List<Element> TestElements) {
         XYChart chart = new XYChartBuilder().width(800).height(600).build();
 
@@ -30,7 +32,7 @@ public class MyChart {
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSW);
         chart.getStyler().setMarkerSize(8);
 
-        Map<Integer, List<Main1.Element>> nabor = new HashMap<>();
+        Map<Integer, List<Element>> nabor = new HashMap<>();
 
         for (Element point : dataList) {
             nabor.computeIfAbsent(point.trueClass, k -> new LinkedList<>());

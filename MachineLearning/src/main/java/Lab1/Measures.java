@@ -8,6 +8,25 @@ import Lab1.Element.*;
  * Created by Polina on 22.10.2017.
  */
 public class Measures {
+    public static class Q {
+        Kernels.KernelType kernel;
+        TransformationType transfromation;
+        double Q, Accuricy, Fmeas;
+        int p, numberOfFolders;
+        int numberOfNeibours;
+
+        public Q(Kernels.KernelType kern, double Q, int p, double Acc, double F, int NOF, TransformationType transform, int k) {
+            this.kernel = kern;
+            Accuricy = Acc;
+            Fmeas = F;
+            this.Q = Q;
+            this.p = p;
+            numberOfFolders = NOF;
+            numberOfNeibours = k;
+            transfromation=transform;
+        }
+    }
+
     public static double[] FMeasure(List <Element> CheckElements) { //accuracy, F-measure
         ListIterator<Element> CheckingIt = CheckElements.listIterator(); //идем по массиву проверочных элементов
         double TP = 0;//действительно положительные

@@ -1,8 +1,5 @@
 package Lab1;
 
-/**
- * Created by Polina on 22.10.2017.
- */
 public class Element {
     public enum TransformationType {
     Default, Simple, Polar, newZCoordinate
@@ -21,7 +18,7 @@ public class Element {
     // Манхэттена, значение квартичной функции при расстоянии Евклида, значение Гауссовской
     // функции при расстоянии Манхэттена, значение Гауссовской функции при расстоянии Евклида
 
-    public Element(float InX, float InY, int C) {
+    public Element(double InX, double InY, int C) {
         x = InX;
         trueX = InX;
         y = InY;
@@ -51,5 +48,20 @@ public class Element {
         this.z = trueX+trueY;
         x=trueX;
         y=trueY;
+    }
+
+
+
+    public static double XYMinkovsky_Distance(Element x, Element y, int p) {
+        //расстояние Минковского. Классическая формулка из лекций
+        return Math.pow((Math.pow(Math.abs(x.x - y.x), p) + Math.pow(Math.abs(x.y - y.y), p)), (1 / p));
+    }
+    public static double XYZMinkovsky_Distance(Element x, Element y, int p) {
+        //расстояние Минковского. Классическая формулка из лекций
+        return Math.pow((Math.pow(Math.abs(x.x - y.x), p) + Math.pow(Math.abs(x.y - y.y), p)+(Math.pow(Math.abs(x.z - y.z), p))), (1 / p));
+    }
+
+    public static double Polar_Minkovsky_Distance(Element x, Element y, int p){
+        return Math.pow((Math.pow(Math.abs(x.r - y.r), p) + Math.pow(Math.abs(x.fi - y.fi), p)), (1 / p));
     }
 }

@@ -26,39 +26,6 @@ public class Main1 {
     public static ArrayList<Q> QS;
 
 
-    public static class Q {
-        KernelType kernel;
-        TransformationType transfromation;
-        double Q, Accuricy, Fmeas;
-        int p, numberOfFolders;
-        int numberOfNeibours;
-
-        public Q(KernelType kern, double Q, int p, double Acc, double F, int NOF, TransformationType transform) {
-            this.kernel = kern;
-            Accuricy = Acc;
-            Fmeas = F;
-            this.Q = Q;
-            this.p = p;
-            numberOfFolders = NOF;
-            numberOfNeibours = k;
-            transfromation=transform;
-        }
-    }
-
-
-    public static double XYMinkovsky_Distance(Element x, Element y, int p) {
-        //расстояние Минковского. Классическая формулка из лекций
-        return Math.pow((Math.pow(Math.abs(x.x - y.x), p) + Math.pow(Math.abs(x.y - y.y), p)), (1 / p));
-    }
-    public static double XYZMinkovsky_Distance(Element x, Element y, int p) {
-        //расстояние Минковского. Классическая формулка из лекций
-        return Math.pow((Math.pow(Math.abs(x.x - y.x), p) + Math.pow(Math.abs(x.y - y.y), p)+(Math.pow(Math.abs(x.z - y.z), p))), (1 / p));
-    }
-
-    public static double PolarDistance(Element x, Element y){
-        return Math.sqrt(Math.pow(x.r, 2)+ Math.pow(y.r,2)-2*x.r*y.r*Math.cos(x.fi*y.fi));
-    }
-
 
     public static List<Element> Cross_Validation(List<Element> TestElements) { //кросс-валидация
         LearningElements = new ArrayList<>();
@@ -104,19 +71,19 @@ public class Main1 {
         CheckElements.addAll(TestElements);//добавляем тестовые элементы
         CheckLearningElements = new ArrayList<>();
         CheckLearningElements.addAll(LearningElements);
-      //  System.out.println("CV Size " + TestElements.size());
+        //  System.out.println("CV Size " + TestElements.size());
         return TestElements;
     }
 
     public static void kNN(List<Element> TestElements, KernelType kernel, int p, TransformationType transformation) {
-       // System.out.println("size " + TestElements.size());
+        // System.out.println("size " + TestElements.size());
         ListIterator<Element> TestIt = TestElements.listIterator(0);
         while (TestIt.hasNext()) {
             Element t = TestIt.next();
             ListIterator<Element> LearningIt = LearningElements.listIterator(0);
             while (LearningIt.hasNext()) {
                 Element e = LearningIt.next();
-                if(transformation==TransformationType.Polar)e.distance = PolarDistance(e, t);
+                if(transformation==TransformationType.Polar)e.distance = Polar_Minkovsky_Distance(e, t, p);
 
                 else if(transformation!=TransformationType.newZCoordinate)
                     e.distance = XYMinkovsky_Distance(e, t, p);
@@ -226,13 +193,10 @@ public class Main1 {
                 }
             }
 
-        for (NumberOfFolders = 3; NumberOfFolders < 90; NumberOfFolders++) {
-            TestElementsNumber = (int) Math.floor((double) NumberOfLines / NumberOfFolders);
-            for (k = 5; k < 15; k++) {
-                Row = 0;
-
+            for (NumberOfFolders = 3; NumberOfFolders < 10; NumberOfFolders++) {
+                TestElementsNumber = (int) Math.floor((double) NumberOfLines / NumberOfFolders);
+                for (k = 5; k < 15; k++) {
                     for (int p = 1; p < 4; p++) {
-                        if(p>1& transformation==TransformationType.Polar) break;
                         for (KernelType kernel : KernelType.values()) {
                             Row = 0;
                             double L = 0;
@@ -240,6 +204,7 @@ public class Main1 {
                             double F = 0;
                             for (int i = 0; i < NumberOfFolders; i++) {
                                 Row++;
+                              //  System.out.println(Row);
                                 TestElements = Cross_Validation(TestElements);
                                 kNN(TestElements, kernel, p, transformation);
                                 double[] Fmeas = FMeasure(CheckElements);
@@ -248,7 +213,7 @@ public class Main1 {
                                 L += Fmeas[2];
 
                             }
-                            QS.add(new Q(kernel, L / NumberOfFolders, p, Accuricy / NumberOfFolders, F / NumberOfFolders, NumberOfFolders, transformation));
+                            QS.add(new Q(kernel, L / NumberOfFolders, p, Accuricy / NumberOfFolders, F / NumberOfFolders, NumberOfFolders, transformation, k));
                         }
 
                     }

@@ -23,7 +23,7 @@ import static Lab1.Main1.kNN;
 public class MyChart {
 
     public List<Element> Pattern;
-    public void drawIt(List<Element> dataList, List<Element> TestElements) throws IOException {
+    public void drawIt(List<Element> TestElements) throws IOException {
         MyChart exampleChart = new MyChart();
         XYChart chart = exampleChart.getChart(TestElements);
         new SwingWrapper<XYChart>(chart).displayChart();
@@ -82,8 +82,10 @@ public class MyChart {
                 yData.add((double) point.y);
             }
 
-            if(TrueClass ==0)
+            if(TrueClass ==0){
+
                 chart.addSeries("Class 0", xData, yData);
+            }
             if(TrueClass ==1)
                 chart.addSeries("Class 1", xData, yData);
             if(TrueClass ==3)

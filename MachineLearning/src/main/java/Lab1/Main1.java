@@ -227,9 +227,19 @@ public class Main1 {
         Q best = QS.get(0);
         System.out.println("k=" + best.numberOfNeibours + ", NumberOfFolders = "+ best.numberOfFolders+", p=" + best.p + ", kernel = " + best.kernel + ", Transformation = "+best.transfromation+", Acc = " + best.Accuricy + ", F-measure " + best.Fmeas);
         System.out.println(QS.size());
-        Cross_Validation(TestElements);
-        kNN(TestElements, best.kernel, best.p, best.transfromation);
-        chart.drawIt(LearningElements, TestElements);
+        NumberOfFolders = best.numberOfFolders;
+        k=best.numberOfNeibours;
+        Row=0;
+        List<Element> ToDraw = new ArrayList<>();
+        TestElementsNumber = (int) Math.floor((double) NumberOfLines / NumberOfFolders);
+        for(int i=0;i<NumberOfFolders; i++) {
+            Row++;
+            TestElements =Cross_Validation(TestElements);
+            kNN(TestElements, best.kernel, best.p, best.transfromation);
+            ListIterator ToDrawIterator = TestElements.listIterator();
+            ToDraw.addAll(TestElements);
+        }
+        chart.drawIt(ToDraw);
 
 
     }

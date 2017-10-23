@@ -1,19 +1,22 @@
-package Lab1;
+package lab1.measures;
 
 import java.util.List;
 import java.util.ListIterator;
-import Lab1.Element.*;
+
+import lab1.element.Element;
+import lab1.element.Element.*;
+import lab1.Kernels;
 
 /**
  * Created by Polina on 22.10.2017.
  */
 public class Measures {
     public static class Q {
-        Kernels.KernelType kernel;
-        TransformationType transfromation;
-        double Q, Accuricy, Fmeas;
-        int p, numberOfFolders;
-        int numberOfNeibours;
+        public Kernels.KernelType kernel;
+        public TransformationType transfromation;
+        public double Q, Accuricy, Fmeas;
+        public int p, numberOfFolders;
+        public int numberOfNeibours;
 
         public Q(Kernels.KernelType kern, double Q, int p, double Acc, double F, int NOF, TransformationType transform, int k) {
             this.kernel = kern;
@@ -46,17 +49,11 @@ public class Measures {
         }
 
         double[] result = new double[3];
-        double P = TP + FN;
-        double N = FP + TN;
-        double L = FN + FP;
-        //  System.out.println("TP " + TP + " FN " + FN + " FP " + FP + " TN " + TN + " P " + P + " N " + N);
-        double Recall;
-        if (P == 0) Recall = 1;
-        else Recall = TP / P;
-        double Precision;
-        if (TP + FP == 0) Precision = 1;
-        else Precision = TP / (TP + FP);
-        double Accuracy = (TP + TN) / (P + N);
+
+        double Recall = TP + FN == 0 ? 1 : ((TP / TP) + FN);
+        double Precision = TP + FP == 0 ? 1 : TP / (TP + FP);
+
+        double Accuracy = (TP + TN) / (TP + FN + FP + TN);
         double F = 2 * Precision * Recall / (Precision + Recall);
         if (Double.isNaN(F)) {
             //   System.out.println(Recall+" "+ Precision +" TP "+ TP+" FP "+ FP+" P "+ P+ " N "+ N);
@@ -64,7 +61,7 @@ public class Measures {
         }
         result[0] = Accuracy;
         result[1] = F;
-        result[2] = L;
+        result[2] = FN + FP;
         return result;
     }
 }

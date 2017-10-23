@@ -1,8 +1,5 @@
-package Lab1;
+package lab1;
 
-/**
- * Created by Polina on 21.10.2017.
- */
 public  class Kernels {
     public enum KernelType {
         Gaussian, Quartic, Triangle, Epanechnikov, Rectangular
@@ -10,7 +7,7 @@ public  class Kernels {
 
 
 
-    public static double QuarticKernalFunction(double u) { //квартическая функция ядра. Подробнее: http://www.machinelearning.ru/wiki/index.php?title=%D0%9D%D0%B5%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F_%D1%80%D0%B5%D0%B3%D1%80%D0%B5%D1%81%D1%81%D0%B8%D1%8F:_%D1%8F%D0%B4%D0%B5%D1%80%D0%BD%D0%BE%D0%B5_%D1%81%D0%B3%D0%BB%D0%B0%D0%B6%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5
+    public static double QuarticKernalFunction(double u) { //квартическая функция ядра.
 
         if (u <= 1) {
 

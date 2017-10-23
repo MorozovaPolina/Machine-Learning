@@ -1,4 +1,14 @@
-package Lab1;
+package lab1;
+
+import lab1.element.Element;
+import lab1.measures.Measures;
+import lab1.mychart.MyChart;
+import lab1.Kernels.*;
+import static lab1.Kernels.*;
+import static lab1.element.Element.*;
+import static lab1.outfilewriting.OutfileWriting.writeOut;
+
+import lab1.kdtree.KDTree;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,10 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 
-import static Lab1.Kernels.*;
-import static Lab1.Measures.*;
-import static Lab1.OutfileWriting.*;
-import static Lab1.Element.*;
+
 
 public class Main1 {
 
@@ -22,14 +29,13 @@ public class Main1 {
     // количество элементов тестовой выборки
 
     public static Comparator<Element> DistanceComparator;
-    public static Comparator<Q> QComparator;
-    public static ArrayList<Q> QS;
+    public static Comparator<Measures.Q> QComparator;
+    public static ArrayList<Measures.Q> QS;
 
 
 
-    public static List<Element> Cross_Validation(List<Element> TestElements) { //кросс-валидация
+    public static List<Element> CrossValidation(List<Element> TestElements) {
         LearningElements = new ArrayList<>();
-        //    System.out.println(Row+" " + NumberOfFolders +" "+ (Row != NumberOfFolders));
         //создаем новую ссылка на обучающую выборку, дабы значения из предыдущих шагов не попали к нам
         TestElements = new ArrayList<>();
         if (Row != NumberOfFolders) {
@@ -83,14 +89,15 @@ public class Main1 {
             ListIterator<Element> LearningIt = LearningElements.listIterator(0);
             while (LearningIt.hasNext()) {
                 Element e = LearningIt.next();
-                if(transformation==TransformationType.Polar)e.distance = Polar_Minkovsky_Distance(e, t, p);
+                if(transformation == TransformationType.Polar) e.distance = Polar_Minkovsky_Distance(e, t, p);
 
-                else if(transformation!=TransformationType.newZCoordinate)
+                else if(transformation != TransformationType.newZCoordinate)
                     e.distance = XYMinkovsky_Distance(e, t, p);
                 else e.distance = XYZMinkovsky_Distance(e, t, p);
             }
 
-            LearningElements.sort(DistanceComparator);
+           LearningElements.sort(DistanceComparator);
+
 
             double QuantityOfAClass = 0;// класс 0
             double QuantityOfBClass = 0;// класс 1
@@ -141,7 +148,7 @@ public class Main1 {
     public static void main(String[] args) throws IOException {
         BufferedReader infile = new BufferedReader(new FileReader("infile.in"));
         List<Element> TestElements = new ArrayList<>();
-        QS = new ArrayList<Q>();
+        QS = new ArrayList<Measures.Q>();
         NumberOfLines = 0;
         NumberOfFolders = 10;
         Elements = new ArrayList<Element>();
@@ -157,7 +164,7 @@ public class Main1 {
             Elements.add(new Element(Float.valueOf(InStringArray[0]), Float.valueOf(InStringArray[1]), Integer.valueOf(InStringArray[2])));
         }
         Collections.shuffle(Elements);
-        for (TransformationType transformation:TransformationType.values()) {
+        for (TransformationType transformation : TransformationType.values()) {
             switch (transformation){
                 case Default:{
                     ListIterator<Element> transformIterator = Elements.listIterator();
@@ -206,14 +213,15 @@ public class Main1 {
                                 Row++;
                               //  System.out.println(Row);
                                 TestElements = Cross_Validation(TestElements);
+                                tree = new KDTree()
                                 kNN(TestElements, kernel, p, transformation);
-                                double[] Fmeas = FMeasure(CheckElements);
+                                double[] Fmeas = Measures.FMeasure(CheckElements);
                                 Accuricy += Fmeas[0];
                                 F += Fmeas[1];
                                 L += Fmeas[2];
 
                             }
-                            QS.add(new Q(kernel, L / NumberOfFolders, p, Accuricy / NumberOfFolders, F / NumberOfFolders, NumberOfFolders, transformation, k));
+                            QS.add(new Measures.Q(kernel, L / NumberOfFolders, p, Accuricy / NumberOfFolders, F / NumberOfFolders, NumberOfFolders, transformation, k));
                         }
 
                     }
@@ -224,8 +232,10 @@ public class Main1 {
         writeOut(QS);
         MyChart chart = new MyChart();
 
-        Q best = QS.get(0);
-        System.out.println("k=" + best.numberOfNeibours + ", NumberOfFolders = "+ best.numberOfFolders+", p=" + best.p + ", kernel = " + best.kernel + ", Transformation = "+best.transfromation+", Acc = " + best.Accuricy + ", F-measure " + best.Fmeas);
+        Measures.Q best = QS.get(0);
+        System.out.println("k=" + best.numberOfNeibours + ", NumberOfFolders = "+ best.numberOfFolders+", " +
+                "p=" + best.p + ", kernel = " + best.kernel + ", Transformation = "+best.transfromation+", " +
+                "Acc = " + best.Accuricy + ", F-measure " + best.Fmeas);
         System.out.println(QS.size());
         NumberOfFolders = best.numberOfFolders;
         k=best.numberOfNeibours;
@@ -258,9 +268,9 @@ public class Main1 {
         };
 
 
-        QComparator = new Comparator<Q>() {
+        QComparator = new Comparator<Measures.Q>() {
             @Override
-            public int compare(Q o1, Q o2) {
+            public int compare(Measures.Q o1, Measures.Q o2) {
                 if (o1.Fmeas < o2.Fmeas) return 1;
                 else if (o1.Fmeas > o2.Fmeas) return -1;
                 else if (o1.Accuricy < o2.Accuricy) return 1;

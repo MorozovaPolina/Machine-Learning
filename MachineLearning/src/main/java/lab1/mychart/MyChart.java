@@ -1,21 +1,13 @@
-package Lab1;
+package lab1.mychart;
 
-import javafx.scene.chart.BubbleChart;
-import javafx.scene.chart.ChartBuilder;
+import lab1.element.Element;
 import org.knowm.xchart.*;
 import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.BubbleChart.*;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
-import Lab1.Main1.*;
-import Lab1.Element.*;
-
-import static Lab1.Main1.kNN;
 
 /**
  * http://knowm.org/open-source/xchart/xchart-example-code/, "Scatter"
@@ -77,9 +69,9 @@ public class MyChart {
             List<Double> xData = new LinkedList<>();
             List<Double> yData = new LinkedList<>();
 
-            for (Element point : coordinates) {
-                xData.add((double)point.x);
-                yData.add((double) point.y);
+            for (Element pnt : coordinates) {
+                xData.add(pnt.point.x);
+                yData.add(pnt.point.y);
             }
 
             if(TrueClass ==0){

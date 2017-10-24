@@ -14,19 +14,18 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
-
+import java.util.concurrent.Callable;
 
 
 public class Main1 {
 
-    public static List<Element> Elements, LearningElements, CheckElements, CheckLearningElements;
     //весь набор исходных элементов, элементы, на которых будет тестировать,
     // элементы для обучения, элементы для проверки (они же те, которые выбраны для тестирования)
+    public static List<Element> Elements, LearningElements, CheckElements, CheckLearningElements;
 
-    public static int NumberOfLines, NumberOfFolders, Row, k, TestElementsNumber;
     //количесвто элементов, количество фолдеров для кросс-валидации, количество соседей,
     // количество элементов тестовой выборки
+    public static int NumberOfLines, NumberOfFolders, Row, k, TestElementsNumber;
 
     public static Comparator<Element> DistanceComparator;
     public static Comparator<Measures.Q> QComparator;
@@ -34,22 +33,22 @@ public class Main1 {
 
 
 
-    public static List<Element> CrossValidation(List<Element> TestElements) {
-        LearningElements = new ArrayList<>();
+    public static List<Element> Cross_Validation(List<Element> TestElements) {
         //создаем новую ссылка на обучающую выборку, дабы значения из предыдущих шагов не попали к нам
+        LearningElements = new ArrayList<>();
         TestElements = new ArrayList<>();
+        //если не последняя проверка. Т.к., поскольку количество элементов не делится нацело на количество
+        // фолдеров для кросс-валидации, в последний фолдер попадает меньше значений. Это хорошо бы отслеживать
         if (Row != NumberOfFolders) {
-            //если не последняя проверка. Т.к., поскольку количество элементов не делится нацело на количество
-            // фолдеров для кросс-валидации, в последний фолдер попадает меньше значений. Это хорошо бы отслеживать
             List<Element> FirstHelpLearning;
             List<Element> TestHelp;
-            FirstHelpLearning = Elements.subList(0, NumberOfLines - Row * TestElementsNumber);
-            TestHelp = Elements.subList(NumberOfLines - Row * TestElementsNumber, NumberOfLines - (Row - 1) * TestElementsNumber);
-
             //вытаскиваем те элементы, которые находятся в выборке до тех элементов, которые мы оставляем
             // для тестирования
+            FirstHelpLearning = Elements.subList(0, NumberOfLines - Row * TestElementsNumber);
             // элементы для тестирования
-            TestElements.addAll(TestHelp); //добавляем. Если делать так, то джава не ругается
+            TestHelp = Elements.subList(NumberOfLines - Row * TestElementsNumber, NumberOfLines - (Row - 1) * TestElementsNumber);
+
+            TestElements.addAll(TestHelp); //добавляем
             if (Row != 1) {
                 //если мы будем тестировать алгоритм не на последних значениях, то есть есть еще значения,
                 // которые нужно добавить в обучающую выборку
@@ -213,7 +212,6 @@ public class Main1 {
                                 Row++;
                               //  System.out.println(Row);
                                 TestElements = Cross_Validation(TestElements);
-                                tree = new KDTree()
                                 kNN(TestElements, kernel, p, transformation);
                                 double[] Fmeas = Measures.FMeasure(CheckElements);
                                 Accuricy += Fmeas[0];
@@ -221,7 +219,15 @@ public class Main1 {
                                 L += Fmeas[2];
 
                             }
-                            QS.add(new Measures.Q(kernel, L / NumberOfFolders, p, Accuricy / NumberOfFolders, F / NumberOfFolders, NumberOfFolders, transformation, k));
+                            QS.add(new Measures.Q(kernel,
+                                    L / NumberOfFolders,
+                                    p,
+                                    Accuricy / NumberOfFolders,
+                                    F / NumberOfFolders,
+                                    NumberOfFolders,
+                                    transformation,
+                                    k)
+                            );
                         }
 
                     }
